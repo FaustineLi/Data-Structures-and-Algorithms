@@ -1,4 +1,3 @@
-
 import random
 
 def bubble_sort(A):
@@ -79,24 +78,24 @@ def merge_sort(A):
         merge_sort(L)
         merge_sort(R)
 
-        r = l = 0
+        right = left = 0
         for i in range(len(A)):
-            if l == len(L):
-                A[i:] = R[r:]
+            if left == len(L):
+                A[i:] = R[right:]
                 break
-            if k == len(R):
-                A[i:] = L[l:]
+            if right == len(R):
+                A[i:] = L[left:]
                 break
 
-            if R[r] < L[l]:
-                A[i] = R[r]
-                r += 1
+            if R[right] < L[left]:
+                A[i] = R[right]
+                right += 1
             else:
-                A[i] = L[l]
-                l += 1
+                A[i] = L[left]
+                left += 1
 
 
-def quick_sort(A, lo = 0, hi = None):
+def quick_sort(A, lo=0, hi=None):
     '''
     Recursively sorts a list by partitioning the array, creating 
     portions that are smaller and larger than a pivot value. 
@@ -111,7 +110,7 @@ def quick_sort(A, lo = 0, hi = None):
     If the list is already sorted, quick sort produces quadratic runtime. 
     To ensure performance, the array is randomly shuffled before sorting.
     '''
-    if lo == 0 and hi == None:
+    if lo == 0 and hi is None:
         random.shuffle(A)
         hi = len(A) - 1
 
@@ -186,7 +185,7 @@ def heap_sort(A):
     while i > 0:
         A[0], A[i] = A[i], A[0]
         sift_down(A, 0, i)
-        i -= 1 
+        i -= 1
 
 
 def radix_sort(A):
@@ -200,28 +199,36 @@ def radix_sort(A):
     results by traversing the auxilliary array.  
     '''
     n = len(A)
-    base = n
     d = 0
-
-    while base ** d <= max(A):
-
-        L = [[] for i in range(base)]
+    while n ** d <= max(A):
+        L = [[] for i in range(n)]
         for i in range(n):
-            k = (A[i] // (base ** d)) % base
+            k = (A[i] // (n ** d)) % n
             L[k].append(A[i]) 
 
         h = 0
-        for i in range(base):
+        for i in range(n):
             for j in range(len(L[i])):
                 A[h] = L[i][j]
-                h += 1
-                
+                h += 1    
         d += 1
 
 
-# ----------------------------------------------------------
+if __name__ == '__main__':
 
-A = [5, 2, 1, 3, 7, 6, 4, 0, 9, 8]
-radix_sort(A)
+    import time
 
-print(A == sorted(A))
+    A = list(range(10000))
+    sorting_functions = [
+        bubble_sort, insertion_sort, selection_sort,
+        shell_sort, heap_sort, merge_sort, quick_sort, radix_sort
+    ]
+
+    for sort in sorting_functions:
+        random.shuffle(A)
+        start = time.time()
+        sort(A)
+        end = time.time()
+        if A == sorted(A):
+            print(sort.__name__, end - start)
+

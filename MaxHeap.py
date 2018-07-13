@@ -1,4 +1,5 @@
 class MaxHeap:
+    '''Class for a max heap data structure'''
 
     def __init__(self, A = None):
         '''
@@ -96,24 +97,21 @@ class MaxHeap:
             i -= 1 
 
        
-# --------------------------------------------------------------------
+if __name__ == '__main__':
 
-A = [1, 4, 2, 7, 6, 5, 3]
+    A = [1, 4, 2, 7, 6, 5, 3]
 
-A = MaxHeap(A)
+    A = MaxHeap(A)
+    print(A)
 
-print(A)
+    A.insert(9)
+    A.insert(11)
+    A.insert(5)
+    print(A)
 
-A.insert(9)
-A.insert(11)
-A.insert(5)
+    A.pop_max()
+    print(A)
 
-print(A)
-
-A.pop_max()
-
-print(A)
-
-A.sort()
-
-print(A)
+    A.sort()
+    print(A)
+    

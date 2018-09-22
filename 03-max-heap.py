@@ -19,10 +19,10 @@ class MaxHeap:
         '''prints heap elements'''
         return str(A.heap)
 
-    def _sink(self, A, k, n = None):
+    def _sift_down(self, A, k, n = None):
         '''
         Moves an node down until both children are smaller than it. 
-        We swap the parent with its largest child. We sink up to 
+        We swap the parent with its largest child. We sift up to 
         a position n (useful for heap sort).
         '''
         i = 2 * k + 1
@@ -41,7 +41,7 @@ class MaxHeap:
             else:
                 break
     
-    def _swim(self, A, k):
+    def _sift_up(self, A, k):
         '''
         Moves an node up by swapping the child with its parent 
         until its parent is bigger than it.
@@ -55,32 +55,32 @@ class MaxHeap:
     def insert(self, k):
         '''
         Inserts an element into the heap by adding it to the end and 
-        restoring the max heap property with the swim operation. 
+        restoring the max heap property with the sift up operation. 
         '''
         self.heap.append(k)
-        self._swim(self.heap, len(self.heap) - 1)
+        self._sift_up(self.heap, len(self.heap) - 1)
 
     def pop_max(self):
         '''
         Removes and returns the max element. We do this by swapping 
         the first and last elements, removing the last element, and 
-        retoring the max heap property with the sink operation. 
+        retoring the max heap property with the sift down operation. 
         '''
         n = len(self.heap) - 1
         self.heap[0], self.heap[n] = self.heap[n], self.heap[0]
         mx = self.heap.pop(n)
-        self._sink(self.heap, 0)
+        self._sift_down(self.heap, 0)
         return mx
 
     def max_heapify(self, A):
         '''
         Constructs a max heap from a list of elements. We do this by
-        starting with the second to last level and performing the sink
+        starting with the second to last level and performing the sift down
         operation to build progressively larger max heaps. 
         '''
         i = (len(A) - 1) // 2
         while i >= 0:
-            self._sink(A, i)
+            self._sift_down(A, i)
             i -= 1
         return A
 
@@ -88,12 +88,12 @@ class MaxHeap:
         '''
         Sorts the heap using heap sort. We swap the maximum element to the
         back of the array and remove it from the heap. We then fix the max 
-        heap property with sink operations. 
+        heap property with the sift down operations. 
         '''
         i = len(self.heap) - 1
         while i > 0:
             self.heap[0], self.heap[i] = self.heap[i], self.heap[0]
-            self._sink(self.heap, 0, i)
+            self._sift_down(self.heap, 0, i)
             i -= 1 
 
        

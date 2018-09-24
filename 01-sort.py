@@ -1,5 +1,3 @@
-import random
-
 def bubble_sort(A):
     '''
     At each pass of the list, we swap adjacent pairs of values if
@@ -19,11 +17,11 @@ def selection_sort(A):
     front by swapping.
     '''
     for i in range(len(A)):
-        min_ind = i
+        min_i = i
         for j in range(i + 1, len(A)):
-            if A[j] < A[min_ind]:
-                min_ind = j
-        A[i], A[min_ind] = A[min_ind], A[i]
+            if A[j] < A[min_i]:
+                min_i = j
+        A[i], A[min_i] = A[min_i], A[i]
 
 
 def insertion_sort(A):
@@ -48,9 +46,8 @@ def shell_sort(A):
     by Knuth and decrease h until the list is 1-sorted. 
     '''
     h = 1
-    while h < len(A):
+    while (3 * h + 1) < len(A):
         h = 3 * h + 1
-    h = (h - 1) // 3
     
     while h >= 1:
         for start in range(h):
@@ -61,6 +58,47 @@ def shell_sort(A):
                     A[j + h], A[j] = A[j], A[j + h]
                     j -= h
         h = (h - 1) // 3
+
+
+def cycle_sort(A):
+    '''
+    A sorting algorithm that minimizes the number of write operations. The 
+    element is only written to the array in its final location which 
+    is found by counting the number of elements less than or equal to it. 
+    This write displaces another element which becomes the next item to be placed. 
+    A cycle of writing and displacing continues until a value is written to the 
+    index at the start of the cycle. The sort is completed when every value in 
+    the list is in the correct location. 
+
+    One optimization is keeping a set of indexes that have been written to and
+    skipping the cycle counting if it has already been seen.
+    '''
+    n = set()
+    for start in range(len(A) - 1):
+        if start not in n:
+            n.add(start)
+        else:
+            continue 
+
+        key = A[start]
+        k = start
+        for j in range(start + 1, len(A)):
+            if A[j] <= key:
+                k += 1
+
+        if k == start:
+            continue
+        else:
+            key, A[k] = A[k], key
+
+        while k != start:
+            k = start
+            for j in range(start + 1, len(A)):
+                if A[j] <= key:
+                    k += 1
+
+            n.add(key)       
+            key, A[k] = A[k], key
 
 
 def merge_sort(A):
@@ -111,6 +149,7 @@ def quick_sort(A, lo=0, hi=None):
     To ensure performance, the array is randomly shuffled before sorting.
     '''
     if lo == 0 and hi is None:
+        import random
         random.shuffle(A)
         hi = len(A) - 1
 
@@ -188,7 +227,7 @@ def heap_sort(A):
         i -= 1
 
 
-def radix_sort(A):
+def radix_sort(A, n=None):
     '''
     A non-comparitive sort that sorts integer keys by digits.
     We sort by the least significant digit to the most significant
@@ -198,7 +237,9 @@ def radix_sort(A):
     by indexing into the digit "pigeonhole". We read out the 
     results by traversing the auxilliary array.  
     '''
-    n = len(A)
+    if n is None:
+        n = len(A)
+
     d = 0
     while n ** d <= max(A):
         L = [[] for i in range(n)]
@@ -213,22 +254,32 @@ def radix_sort(A):
                 h += 1    
         d += 1
 
-
+        
 if __name__ == '__main__':
 
     import time
+    import random
 
     A = list(range(10000))
     sorting_functions = [
-        bubble_sort, insertion_sort, selection_sort,
-        shell_sort, heap_sort, merge_sort, quick_sort, radix_sort
+        bubble_sort,
+        cycle_sort, 
+        insertion_sort, 
+        selection_sort,
+        shell_sort, 
+        heap_sort, 
+        merge_sort, 
+        quick_sort, 
+        radix_sort
     ]
 
     for sort in sorting_functions:
+        random.seed(0)
         random.shuffle(A)
+        
         start = time.time()
         sort(A)
         end = time.time()
+        
         if A == sorted(A):
             print(sort.__name__, end - start)
-
